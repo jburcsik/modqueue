@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run check:package
+
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: npm ci
+      - run: supabase start
+      - run: supabase test db
+      - name: Export local Supabase URL and keys
+        run: |
+          supabase status -o json > "$RUNNER_TEMP/status.json"
+          echo "SUPABASE_URL=$(jq -r .API_URL "$RUNNER_TEMP/status.json")" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$(jq -r .SERVICE_ROLE_KEY "$RUNNER_TEMP/status.json")" >> "$GITHUB_ENV"
+          echo "SUPABASE_ANON_KEY=$(jq -r .ANON_KEY "$RUNNER_TEMP/status.json")" >> "$GITHUB_ENV"
+      - run: npm run test:integration
+      - if: always()
+        run: supabase stop

@@ -1,0 +1,173 @@
+{
+  "description": "The eight rows of supabase/tests/11_reach.sql. account_age_hours is relative to the clock at evaluation time; the SQL test builds account_created_at as now() minus that many hours. Expected coefficients are the unrounded product compared to four decimals on both sides; reputation is an integer.",
+  "rows": [
+    {
+      "name": "new account, no activity",
+      "inputs": {
+        "account_age_hours": 10,
+        "posts": 0,
+        "endorsed_posts": 0,
+        "endorsements_given": 0,
+        "reports_received": 0,
+        "far_rate": null,
+        "active_strike_points": 0
+      },
+      "expected": {
+        "reputation_score": 40,
+        "age_factor": 0.5,
+        "reputation_factor": 0.8,
+        "strike_factor": 1,
+        "engagement_factor": 1,
+        "far_report_factor": 1,
+        "coefficient": 0.4
+      }
+    },
+    {
+      "name": "four-day account, some activity",
+      "inputs": {
+        "account_age_hours": 100,
+        "posts": 5,
+        "endorsed_posts": 2,
+        "endorsements_given": 4,
+        "reports_received": 0,
+        "far_rate": null,
+        "active_strike_points": 0
+      },
+      "expected": {
+        "reputation_score": 53,
+        "age_factor": 0.75,
+        "reputation_factor": 0.8,
+        "strike_factor": 1,
+        "engagement_factor": 1,
+        "far_report_factor": 1,
+        "coefficient": 0.6
+      }
+    },
+    {
+      "name": "second-week member near every cap",
+      "inputs": {
+        "account_age_hours": 200,
+        "posts": 12,
+        "endorsed_posts": 8,
+        "endorsements_given": 20,
+        "reports_received": 0,
+        "far_rate": 0.1,
+        "active_strike_points": 0
+      },
+      "expected": {
+        "reputation_score": 86,
+        "age_factor": 0.9,
+        "reputation_factor": 1.15,
+        "strike_factor": 1,
+        "engagement_factor": 1.1,
+        "far_report_factor": 1,
+        "coefficient": 1.1385
+      }
+    },
+    {
+      "name": "established member at every cap",
+      "inputs": {
+        "account_age_hours": 1000,
+        "posts": 20,
+        "endorsed_posts": 10,
+        "endorsements_given": 30,
+        "reports_received": 0,
+        "far_rate": null,
+        "active_strike_points": 0
+      },
+      "expected": {
+        "reputation_score": 86,
+        "age_factor": 1,
+        "reputation_factor": 1.15,
+        "strike_factor": 1,
+        "engagement_factor": 1.1,
+        "far_report_factor": 1,
+        "coefficient": 1.265
+      }
+    },
+    {
+      "name": "reported member with two strike points",
+      "inputs": {
+        "account_age_hours": 1000,
+        "posts": 3,
+        "endorsed_posts": 0,
+        "endorsements_given": 0,
+        "reports_received": 3,
+        "far_rate": null,
+        "active_strike_points": 2
+      },
+      "expected": {
+        "reputation_score": 31,
+        "age_factor": 1,
+        "reputation_factor": 0.6,
+        "strike_factor": 0.75,
+        "engagement_factor": 0.85,
+        "far_report_factor": 1,
+        "coefficient": 0.3825
+      }
+    },
+    {
+      "name": "endorsed member with strikes and far submissions",
+      "inputs": {
+        "account_age_hours": 1000,
+        "posts": 10,
+        "endorsed_posts": 9,
+        "endorsements_given": 2,
+        "reports_received": 4,
+        "far_rate": 0.3,
+        "active_strike_points": 5
+      },
+      "expected": {
+        "reputation_score": 59,
+        "age_factor": 1,
+        "reputation_factor": 1,
+        "strike_factor": 0.45,
+        "engagement_factor": 1,
+        "far_report_factor": 0.4,
+        "coefficient": 0.18
+      }
+    },
+    {
+      "name": "heavily reported member at the floor",
+      "inputs": {
+        "account_age_hours": 1000,
+        "posts": 15,
+        "endorsed_posts": 1,
+        "endorsements_given": 0,
+        "reports_received": 10,
+        "far_rate": 0.7,
+        "active_strike_points": 8
+      },
+      "expected": {
+        "reputation_score": 23,
+        "age_factor": 1,
+        "reputation_factor": 0.4,
+        "strike_factor": 0.1,
+        "engagement_factor": 0.85,
+        "far_report_factor": 0.1,
+        "coefficient": 0.0034
+      }
+    },
+    {
+      "name": "new reported member with far submissions",
+      "inputs": {
+        "account_age_hours": 47,
+        "posts": 1,
+        "endorsed_posts": 0,
+        "endorsements_given": 0,
+        "reports_received": 1,
+        "far_rate": 0.25,
+        "active_strike_points": 0
+      },
+      "expected": {
+        "reputation_score": 37,
+        "age_factor": 0.5,
+        "reputation_factor": 0.6,
+        "strike_factor": 1,
+        "engagement_factor": 0.85,
+        "far_report_factor": 0.4,
+        "coefficient": 0.102
+      }
+    }
+  ]
+}

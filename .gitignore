@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.tgz
+supabase/.temp/
+supabase/.branches/
+examples/admin/.next/
+examples/admin/node_modules/
+examples/admin/test-results/
+examples/admin/playwright-report/
+examples/admin/AGENTS.md
+examples/admin/next-env.d.ts
+examples/admin/tsconfig.tsbuildinfo
+*.tsbuildinfo
